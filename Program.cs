@@ -1,4 +1,5 @@
 using Azure.Communication.Email;
+using Azure.Messaging.ServiceBus;
 using EmailVerificationService.Interface;
 using EmailVerificationService.Services;
 
@@ -9,6 +10,12 @@ builder.Services.AddOpenApi();
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton(x => new EmailClient(builder.Configuration["ACS:ConnectionString"]));
 builder.Services.AddTransient<IVerificationService, VerificationService>();
+builder.Services.AddSingleton(sp =>
+{
+    var sbConnection = builder.Configuration["ServiceBus:ConnectionString"];
+    return new ServiceBusClient(sbConnection);
+});
+
 
 var app = builder.Build();
 app.MapOpenApi();

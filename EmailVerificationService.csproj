@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="azure.communication.email" Version="1.0.1" />
+    <PackageReference Include="azure.messaging.servicebus" Version="7.19.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
   </ItemGroup>
 

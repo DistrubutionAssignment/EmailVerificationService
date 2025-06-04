@@ -1,18 +1,34 @@
 ﻿using System.Diagnostics;
+using System.Text.Json;
 using Azure;
 using Azure.Communication.Email;
+using Azure.Messaging.ServiceBus;
 using EmailVerificationService.Interface;
 using EmailVerificationService.Models;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace EmailVerificationService.Services;
 
-public class VerificationService(IConfiguration configuration, EmailClient emailClient, IMemoryCache cashe) : IVerificationService
+
+public class VerificationService : IVerificationService
 {
-    private readonly IConfiguration _configuration = configuration;
-    private readonly EmailClient _emailClient = emailClient;
-    private readonly IMemoryCache _cache = cashe;
+    private readonly IConfiguration _configuration;
+    private readonly EmailClient _emailClient;
+    private readonly IMemoryCache _cache;
+    private readonly ServiceBusClient _serviceBusClient;
     private static readonly Random _random = new();
+
+    public VerificationService(
+        IConfiguration configuration,
+        EmailClient emailClient,
+        IMemoryCache cache,
+        ServiceBusClient serviceBusClient)
+    {
+        _configuration = configuration;
+        _emailClient = emailClient;
+        _cache = cache;
+        _serviceBusClient = serviceBusClient;
+    }
 
     public async Task<VerificationServiceResult> SendVerificationEmailAsync(SendVerificationCodeRequest request)
     {
@@ -114,16 +130,33 @@ public class VerificationService(IConfiguration configuration, EmailClient email
     public VerificationServiceResult VerifyVerificationCode(VerifyVerificationCodeRequest request)
     {
         var key = request.Email.ToLowerInvariant();
-        if(_cache.TryGetValue(key, out string? storedCode))
+        if (_cache.TryGetValue(key, out string? storedCode))
         {
             if (storedCode == request.Code)
             {
                 _cache.Remove(key);
-                return new VerificationServiceResult { Succeeded = true, Message = "Verification Sucessfull."};
-            }
-                
-        }
-        return new VerificationServiceResult { Succeeded = false, Message = "Verification Failed." };
 
+                PublishEmailConfirmed(request.Email).GetAwaiter().GetResult();
+
+                return new VerificationServiceResult { Succeeded = true, Message = "Verification Successful." };
+            }
+        }
+        return new VerificationServiceResult { Succeeded = false, Message = "Verification Failed or Code Expired." };
+    }
+
+    private async Task PublishEmailConfirmed(string email)
+    {
+        var queueName = _configuration["ServiceBus:QueueName"];
+        ServiceBusSender sender = _serviceBusClient.CreateSender(queueName);
+
+        var payload = new { Email = email.ToLowerInvariant() };
+        string jsonPayload = JsonSerializer.Serialize(payload);
+
+        ServiceBusMessage message = new ServiceBusMessage(jsonPayload)
+        {
+            ContentType = "application/json"
+        };
+
+        await sender.SendMessageAsync(message);
     }
 }
