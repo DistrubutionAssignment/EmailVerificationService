@@ -1,5 +1,6 @@
 ﻿using EmailVerificationService.Interface;
 using EmailVerificationService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ namespace EmailVerificationService.Controllers;
 public class VerificationController(IVerificationService verificationController) : ControllerBase
 {
     private readonly IVerificationService _verificationService = verificationController;
-
+    [AllowAnonymous]
     [HttpPost("send")]
     public async Task<IActionResult> Send(SendVerificationCodeRequest request)
     {
@@ -23,7 +24,7 @@ public class VerificationController(IVerificationService verificationController)
             ? Ok(result)
             : StatusCode(500, result);
     }
-
+    [AllowAnonymous]
     [HttpPost("verify")]
     public IActionResult Verify(VerifyVerificationCodeRequest request)
     {
