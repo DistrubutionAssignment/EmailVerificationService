@@ -17,8 +17,22 @@ var acsSender = builder.Configuration["ACS:SenderAdress"]!;
 var sbConn = builder.Configuration["ServiceBus:ConnectionString"]!;
 var sbQueue = builder.Configuration["ServiceBus:QueueName"]!;
 
+builder.Services.AddCors(o => o.AddPolicy("DefaultCors", p =>
+    p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
+
+
 // Registrera EmailClient och ServiceBusClient
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();          
+builder.Services.AddSwaggerGen(c =>                 
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "EmailVerificationService API",
+        Version = "v1"
+    });
+});
 builder.Services.AddOpenApi();
 
 builder.Services.AddMemoryCache();
@@ -35,19 +49,22 @@ builder.Services.AddSingleton(_ => new ServiceBusClient(sbConn));
 //CORS + Middleware
 var app = builder.Build();
 
+app.UseCors("DefaultCors");
+
 app.UseHttpsRedirection();
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-//Swagger / OpenAPI
-app.MapOpenApi();
-app.UseSwaggerUI(c =>
+//Swagger 
+app.UseSwagger();             
+app.UseSwaggerUI(c =>            
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmailVerificationService API V1");
     c.RoutePrefix = string.Empty;
 });
 
+app.MapOpenApi();
 app.MapControllers();
 app.Run();
