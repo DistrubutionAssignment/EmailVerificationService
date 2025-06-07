@@ -50,7 +50,7 @@ public class VerificationService : IVerificationService
 
             Alternatively, you can click the link below to verify your email directly:
             // Replace with the full verification URL including token or user ID
-            https://yourdomain.com/verify-email?code={verCode}&email=your@email.com
+            https://ashy-cliff-0942cde03.6.azurestaticapps.net/verify-code?code={verCode}&email={request.Email}
 
             This code will expire in 15 minutes.
 
@@ -81,7 +81,7 @@ public class VerificationService : IVerificationService
                         </p>
                         <p style='color: #37437D;'>Or click the button below:</p>
                         <div style='text-align: center; margin: 30px 0;'>
-                          <a href='https://yourdomain.com/verify-email?code={verCode}&email=your@email.com' 
+                          <a href='https://ashy-cliff-0942cde03.6.azurestaticapps.net/verify-code?code={verCode}&email={request.Email}' 
                              style='display: inline-block; background-color: #F26CF9; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold;'>
                             Verify Email
                           </a>
