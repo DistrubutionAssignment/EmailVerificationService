@@ -40,7 +40,7 @@ builder.Services.AddMemoryCache();
 // Azure Communication Email
 builder.Services.AddSingleton(_ => new EmailClient(acsConnString));
 
-// Din egen Verifierings‐service
+//Verifierings‐service
 builder.Services.AddTransient<IVerificationService, VerificationService>();
 
 // Service Bus

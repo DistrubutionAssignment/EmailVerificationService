@@ -81,7 +81,7 @@ public class VerificationService : IVerificationService
                         </p>
                         <p style='color: #37437D;'>Or click the button below:</p>
                         <div style='text-align: center; margin: 30px 0;'>
-                          <a href='https://ashy-cliff-0942cde03.6.azurestaticapps.net/verify-code?code={verCode}&email={request.Email}' 
+                          <a href='https://ashy-cliff-0942cde03.6.azurestaticapps.net/verify-code?code={verCode}&email={request.Email}'  
                              style='display: inline-block; background-color: #F26CF9; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold;'>
                             Verify Email
                           </a>
@@ -101,7 +101,7 @@ public class VerificationService : IVerificationService
                     </html>
                     ";
             var emailMessage = new EmailMessage(
-                senderAddress: _configuration["ACS:SenderAddress"],
+                senderAddress: _configuration["ACS:SenderAddress"], //använder oss av keyvault variabel
                 recipients: new EmailRecipients([new(request.Email)]),
                 content: new EmailContent(subject)
                 {
@@ -152,7 +152,7 @@ public class VerificationService : IVerificationService
         var payload = new { Email = email.ToLowerInvariant() };
         string jsonPayload = JsonSerializer.Serialize(payload);
 
-        ServiceBusMessage message = new ServiceBusMessage(jsonPayload)
+        ServiceBusMessage message = new ServiceBusMessage(jsonPayload) //skickar meddelandet till service bus så vi kan flagga email som bekräftat
         {
             ContentType = "application/json"
         };

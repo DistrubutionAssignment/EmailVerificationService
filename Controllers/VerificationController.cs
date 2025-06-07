@@ -19,7 +19,7 @@ public class VerificationController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost("send")]
+    [HttpPost("send")] //skicka verifications kod
     public async Task<IActionResult> Send([FromBody] SendVerificationCodeRequest request)
     {
         if (!ModelState.IsValid)
@@ -37,7 +37,7 @@ public class VerificationController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost("verify")]
+    [HttpPost("verify")] //verifierar koden
     public IActionResult Verify([FromBody] VerifyVerificationCodeRequest request)
     {
         if (!ModelState.IsValid)
