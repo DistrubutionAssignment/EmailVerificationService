@@ -101,7 +101,7 @@ public class VerificationService : IVerificationService
                     </html>
                     ";
             var emailMessage = new EmailMessage(
-                senderAddress: _configuration["ACS:SenderAdress"],
+                senderAddress: _configuration["ACS:SenderAddress"],
                 recipients: new EmailRecipients([new(request.Email)]),
                 content: new EmailContent(subject)
                 {
