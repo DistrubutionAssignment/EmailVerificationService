@@ -13,7 +13,7 @@ builder.Configuration.AddAzureKeyVault(vaultUri, new DefaultAzureCredential());
 
 //  Läs in hemligheterna
 var acsConnString = builder.Configuration["ACS:ConnectionString"]!;
-var acsSender = builder.Configuration["ACS:SenderAdress"]!;
+var acsSender = builder.Configuration["ACS:SenderAddress"]!;
 var sbConn = builder.Configuration["ServiceBus:ConnectionString"]!;
 var sbQueue = builder.Configuration["ServiceBus:QueueName"]!;
 
