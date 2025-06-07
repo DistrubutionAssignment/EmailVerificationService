@@ -8,8 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="azure.communication.email" Version="1.0.1" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.2" />
+    <PackageReference Include="Azure.Identity" Version="1.13.0" />
     <PackageReference Include="azure.messaging.servicebus" Version="7.19.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
+    <PackageReference Include="swashbuckle.aspnetcore" Version="8.1.4" />
   </ItemGroup>
 
 </Project>

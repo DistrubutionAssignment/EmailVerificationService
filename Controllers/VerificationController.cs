@@ -26,9 +26,14 @@ public class VerificationController : ControllerBase
             return BadRequest(new { Error = "Email Address is required" });
 
         var result = await _verificationService.SendVerificationEmailAsync(request);
-        return result.Succeeded
-            ? Ok(result)
-            : StatusCode(500, result);
+        if (result.Succeeded)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return BadRequest(result);
+        }
     }
 
     [AllowAnonymous]
@@ -39,8 +44,13 @@ public class VerificationController : ControllerBase
             return BadRequest(new { Error = "Invalid or expired code" });
 
         var result = _verificationService.VerifyVerificationCode(request);
-        return result.Succeeded
-            ? Ok(result)
-            : StatusCode(500, result);
+        if (result.Succeeded)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return BadRequest(result);
+        }
     }
 }
